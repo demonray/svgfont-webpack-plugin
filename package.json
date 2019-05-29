@@ -1,0 +1,36 @@
+{
+    "name": "svgicon",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "cd examples && webpack-dev-server",
+        "build": "webpack --config examples/webpack.config.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "css-loader": "^2.1.1",
+        "html-webpack-plugin": "^4.0.0-beta.5",
+        "style-loader": "^0.23.1",
+        "webpack": "^4.32.0",
+        "webpack-cli": "^3.3.2",
+        "webpack-dev-server": "^3.4.1"
+    },
+    "dependencies": {
+        "async": "^3.0.1",
+        "cheerio": "^1.0.0-rc.2",
+        "colors-cli": "^1.0.18",
+        "copy-template-dir": "^1.4.0",
+        "fs-extra": "^7.0.0",
+        "glob": "^7.1.4",
+        "pretty-error": "^2.1.1",
+        "svg2ttf": "^4.1.0",
+        "svgicons2svgfont": "^9.0.4",
+        "svgo": "^1.1.1",
+        "ttf2eot": "^2.0.0",
+        "ttf2woff": "^2.0.1",
+        "ttf2woff2": "^2.0.3"
+    }
+}

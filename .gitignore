@@ -1,0 +1,5 @@
+.DS_Store
+.vscode
+tmpsvg
+node_modules
+examples/dist
