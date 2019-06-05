@@ -2,4 +2,5 @@
 .vscode
 tmpsvg
 node_modules
-examples/dist
+examples/dist/
+examples/fonts/

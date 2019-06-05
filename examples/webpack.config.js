@@ -27,11 +27,13 @@ module.exports = {
         }),
         new SvgIconWebpackPlugin({
             pattern: '**/*',
+            dist: path.join(__dirname, 'dist/fonts'),
             rules: [{
-                match: /svg-icon/,
-                ext: /\.css$/
+                match: /<i.*class=".*iconfont-([0-9a-zA-Z_-]*)".*>/,
+                ext: /\.html$/
             }],
-            inject: 'html'
+            //inject: 'link',
+            inject: 'style',
         })
     ]
 };

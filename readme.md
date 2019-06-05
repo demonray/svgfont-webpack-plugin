@@ -15,12 +15,24 @@ https://github.com/vusion/icon-font-loader
 webpack 插件
 收集使用的图标，打包时替换成css 或者生成svg-spirit
 
-css {
-    svg-icon: 'home'
-}
+使用场景：
 
+字体文件方式
+1. html vue等组件里面通过class匹配出使用的图标名：
+<i class="iconfont iconfont-home" />
+<Icon type="iconfont-home" />
+2. 配置插件传递图标目录，或者名称数组
+['iconfont-home','iconfont-plus']
+3. css 文件 ？
 
-replace-in-file-webpack-plugin
+svg方式
 
+配置支持：
+
+index.html 插入link样式
+入口文件注入样式引用
+
+todo：
+内置图表库，项目图标配置
 
 
