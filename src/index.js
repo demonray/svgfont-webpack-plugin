@@ -8,8 +8,6 @@ const path = require('path');
 const create = require('../lib');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const prettyError = require('../lib/errors.js');
-const fsLstatAsync = util.promisify(fs.lstat);
-const fsReaddirAsync = util.promisify(fs.readdir);
 const glob = util.promisify(require('glob'));
 const tempSvgDir = path.resolve('../tmpsvg')
 
@@ -83,15 +81,18 @@ class SvgIconWebpackPlugin {
                         const distPath = path.relative(compiler.options.output.path, this.options.dist);
                         const stylePath = path.join(distPath, `${this.options.fontName}.css`);
                         const headRegExp = /(<\/head\s*>)/i;
+                        let inject;
                         if(this.options.inject === 'link') {
-                            const link = `<link rel="stylesheet" type="text/css" href="${stylePath}"/>`;
-                            data.html = data.html.replace(headRegExp, match => link + match);
+                            inject = `<link rel="stylesheet" type="text/css" href="${stylePath}"/>`;
                         } else if(this.options.inject === 'style') {
                             const filePath = path.resolve(this.options.dist, `${this.options.fontName}.css`)
                             const content = fs.readFileSync(filePath)
-                            const style = `<style type="text/css">${content}</style>`
-                            data.html = data.html.replace(headRegExp, match => style + match);
+                            inject = `<style type="text/css">${content}</style>`
+                        } else if(this.options.inject === 'script') {
+                            const jsPath = path.join(distPath, `${this.options.fontName}.js`);
+                            inject = `<script  type="text/javascript" src="${jsPath}"></script>`;
                         }
+                        if(inject) data.html = data.html.replace(headRegExp, match => inject + match);
                         cb(null, data)
                     })
                 }

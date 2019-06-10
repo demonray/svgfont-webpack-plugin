@@ -33,7 +33,8 @@ module.exports = {
                 ext: /\.html$/
             }],
             //inject: 'link',
-            inject: 'style',
+            //inject: 'style',
+            inject: 'script',
             fontName: 'iconfont',
             svgIcons: ['wind']
         })
