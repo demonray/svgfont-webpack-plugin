@@ -29,7 +29,8 @@ svg方式
 
 配置支持：
 
-index.html 插入link样式
+index.html 插入link引用样式文件
+通过style标签直接插入html文件
 入口文件注入样式引用
 
 todo：

@@ -23,10 +23,11 @@ class SvgIconWebpackPlugin {
             },
             dist: path.join(process.cwd(), "fonts"),
             fontName: "iconfont",
-            rules: []
+            rules: [],
+            svgIcons: []
         }
         this.options = Object.assign(defaultOptions, options)
-        this.svgIcons = []
+        this.svgIcons = this.options.svgIcons
     }
 
     apply(compiler) {

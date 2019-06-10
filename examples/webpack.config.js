@@ -34,6 +34,8 @@ module.exports = {
             }],
             //inject: 'link',
             inject: 'style',
+            fontName: 'iconfont',
+            svgIcons: ['wind']
         })
     ]
 };
