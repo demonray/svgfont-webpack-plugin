@@ -19,7 +19,6 @@ webpack 插件
 <Icon type="iconfont-home" />
 2. 配置插件传递图标目录，或者名称数组
 ['iconfont-home','iconfont-plus']
-3. css 文件 ？
 
 svg方式
 svg symbol
@@ -30,7 +29,7 @@ index.html 插入link引用样式文件
 通过style标签直接插入html文件
 入口文件注入样式引用 ？
 
-todo：
-内置图表库，项目图标配置 ？
+
+内置图表库，项目图标配置
 
 

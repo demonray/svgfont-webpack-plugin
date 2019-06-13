@@ -9,8 +9,9 @@ const create = require('../lib');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const prettyError = require('../lib/errors.js');
 const glob = util.promisify(require('glob'));
-const tempSvgDir = path.resolve('../tmpsvg')
+const tempSvgDir = path.resolve('../tmpsvg');
 
+const pluginName = 'SvgIconWebpackPlugin'
 class SvgIconWebpackPlugin {
 
     constructor(options = {}) {
@@ -30,69 +31,71 @@ class SvgIconWebpackPlugin {
 
     apply(compiler) {
         let generateFontsPromise;
-        compiler.hooks.make.tapAsync('SvgIconWebpackPlugin', (compilation, callback) => {
-            generateFontsPromise = this.getAllFiles(compiler, compilation).then(files => {
-                const rules = this.options.rules;
-                const srcs = {}
-                files.forEach(file => {
-                    let ruleItem = rules.find(rule => rule.ext.test(file))
-                    if (ruleItem) {
-                        const src = path.resolve(file)
-                        return srcs[src] = ruleItem
-                    }
+        this.fontsPath = path.relative(compiler.options.output.path, this.options.dist);
+        compiler.hooks.make.tapAsync(pluginName, (compilation, callback) => {
+            generateFontsPromise = this.getAllFiles(compiler, compilation)
+                .then(files => {
+                    const rules = this.options.rules;
+                    const srcs = {}
+                    files.forEach(file => {
+                        let ruleItem = rules.find(rule => rule.ext.test(file))
+                        if (ruleItem) {
+                            const src = path.resolve(file)
+                            return srcs[src] = ruleItem
+                        }
+                    })
+                    return srcs
                 })
-                return srcs
-            }).then((srcs) => {
-                return async.mapValuesLimit(srcs, 2, function (file, key, cb) {
-                    fs.readFile(key, 'utf-8', cb);
-                }, (err, results) => {
-                    if (err) {
-                        compilation.errors.push(prettyError(err, compiler.context).toString());
-                    }
-                    Object.keys(results).forEach(key => {
-                        let ruleItem = srcs[key]
-                        if (ruleItem.match) {
-                            ruleItem.match = new RegExp(ruleItem.match, 'g')
+                .then((srcs) => {
+                    return async.mapValuesLimit(srcs, 2, function (file, key, cb) {
+                        fs.readFile(key, 'utf-8', cb);
+                    }, (err, results) => {
+                        if (err) {
+                            compilation.errors.push(prettyError(err, compiler.context).toString());
                         }
-                        let matched = []
-                        while ( (matched = ruleItem.match.exec(results[key])) !== null) {
-                            if(matched[1]){
-                                this.svgIcons.push(matched[1])
+                        Object.keys(results).forEach(key => {
+                            let ruleItem = srcs[key]
+                            if (ruleItem.match) {
+                                ruleItem.match = new RegExp(ruleItem.match, 'g')
                             }
-                        }
-                        this.svgIcons = Array.from(new Set(this.svgIcons))
-                    })
-                    this.generateFonts().then(() => {
-                        console.log('SvgIconWebpackPlugin done!')
-                        fsextra.removeSync(tempSvgDir)
-                        callback();
-                    }).catch(err => {
-                        compilation.errors.push(prettyError(err, compiler.context).toString());
-                    })
-                });
-            })
+                            let matched = []
+                            while ((matched = ruleItem.match.exec(results[key])) !== null) {
+                                if (matched[1]) {
+                                    this.svgIcons.push(matched[1])
+                                }
+                            }
+                            this.svgIcons = Array.from(new Set(this.svgIcons))
+                        })
+                        this.generateFonts().then(() => {
+                            console.log('SvgIconWebpackPlugin done!')
+                            fsextra.removeSync(tempSvgDir)
+                            callback();
+                        }).catch(err => {
+                            compilation.errors.push(prettyError(err, compiler.context).toString());
+                        })
+                    });
+                })
         })
 
-        compiler.hooks.compilation.tap('SvgIconWebpackPlugin', (compilation) => {
+        compiler.hooks.compilation.tap(pluginName, (compilation) => {
             HtmlWebpackPlugin.getHooks(compilation).beforeEmit.tapAsync(
-                'SvgIconWebpackPlugin',
+                pluginName,
                 (data, cb) => {
                     generateFontsPromise.then(() => {
-                        const distPath = path.relative(compiler.options.output.path, this.options.dist);
-                        const stylePath = path.join(distPath, `${this.options.fontName}.css`);
+                        const stylePath = path.join(this.fontsPath, `${this.options.fontName}.css`);
                         const headRegExp = /(<\/head\s*>)/i;
                         let inject;
-                        if(this.options.inject === 'link') {
+                        if (this.options.inject === 'link') {
                             inject = `<link rel="stylesheet" type="text/css" href="${stylePath}"/>`;
-                        } else if(this.options.inject === 'style') {
+                        } else if (this.options.inject === 'style') {
                             const filePath = path.resolve(this.options.dist, `${this.options.fontName}.css`)
                             const content = fs.readFileSync(filePath)
                             inject = `<style type="text/css">${content}</style>`
-                        } else if(this.options.inject === 'script') {
-                            const jsPath = path.join(distPath, `${this.options.fontName}.js`);
+                        } else if (this.options.inject === 'script') {
+                            const jsPath = path.join(this.fontsPath, `${this.options.fontName}.js`);
                             inject = `<script  type="text/javascript" src="${jsPath}"></script>`;
                         }
-                        if(inject) data.html = data.html.replace(headRegExp, match => inject + match);
+                        if (inject) data.html = data.html.replace(headRegExp, match => inject + match);
                         cb(null, data)
                     })
                 }
@@ -115,6 +118,7 @@ class SvgIconWebpackPlugin {
 
     generateFonts() {
         fsextra.emptyDirSync(tempSvgDir)
+        // Todo caceh icons， no change ？
         this.svgIcons.forEach(item => {
             let iconPath = path.resolve(process.cwd(), `../src/svgs/${item}.svg`)
             let distPath = `${tempSvgDir}/${item}.svg`
@@ -144,7 +148,7 @@ class SvgIconWebpackPlugin {
             dist: this.options.dist,
             emptyDist: true,
             fontName: this.options.fontName,
-            fontsPath: 'fonts/'
+            fontsPath: this.fontsPath
         })
     }
 
