@@ -26,17 +26,18 @@ module.exports = {
             template: 'index.html'
         }),
         new SvgIconWebpackPlugin({
-            pattern: '**/*',
-            dist: path.join(__dirname, 'dist/fonts'),
-            rules: [{
-                match: /<i.*class=".*iconfont-([0-9a-zA-Z_-]*)".*>/,
-                ext: /\.html$/
-            }],
             //inject: 'link',
             //inject: 'style',
             inject: 'script',
             fontName: 'iconfont',
-            svgIcons: ['wind']
+            pattern: '**/*.html',
+            rules: [{
+                match: /<i.*class=".*iconfont-([0-9a-zA-Z_-]*)".*>/,
+                ext: /\.html$/
+            }],
+            svgIcons: ['wind','xhs'],
+            dir: path.join(__dirname, 'icons'), // svg file directory
+            dist: path.join(__dirname, 'dist/fonts'),
         })
     ]
 };

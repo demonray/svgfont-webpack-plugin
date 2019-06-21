@@ -41,6 +41,7 @@ class SvgIconWebpackPlugin {
                         let ruleItem = rules.find(rule => rule.ext.test(file))
                         if (ruleItem) {
                             const src = path.resolve(file)
+                            console.log(src)
                             return srcs[src] = ruleItem
                         }
                     })
@@ -122,24 +123,22 @@ class SvgIconWebpackPlugin {
         this.svgIcons.forEach(item => {
             let iconPath = path.resolve(process.cwd(), `../src/svgs/${item}.svg`)
             let distPath = `${tempSvgDir}/${item}.svg`
+            let foundInProj = false
             // use config svg icons dir and built-in svg icons
             if (this.options.dir) {
                 let svgPath = `${this.options.dir}/${item}.svg`
-                if (fs.existsSync(svgPath) && fsextra.ensureFileSync(svgPath)) {
-                    useProjSvgs = true
+                if (fs.existsSync(svgPath) && fsextra.statSync(svgPath).isFile()) {
                     fsextra.copySync(svgPath, distPath)
-                } else if (fs.existsSync(iconPath) && fsextra.statSync(iconPath).isFile()) {
-                    fsextra.copySync(iconPath, distPath)
-                } else {
-                    console.log(`${color.red('ERROR')} Can't found file '${item}.svg' in ${svgPath}`)
+                    foundInProj = true
                 }
             }
-
-            // use built-in svg icons
-            if (fs.existsSync(iconPath) && fsextra.statSync(iconPath).isFile()) {
-                fsextra.copySync(iconPath, distPath)
-            } else {
-                console.log(`${color.red('ERROR')} No built-in file '${item}.svg' in ${iconPath},you can config icons directory by options.dir and put you file into the directory`)
+            // search built-in svg icons
+            if(!foundInProj) {
+                if (fs.existsSync(iconPath) && fsextra.statSync(iconPath).isFile()) {
+                    fsextra.copySync(iconPath, distPath)
+                } else {
+                    console.log(`${color.red('ERROR')} No built-in file '${item}.svg' in ${iconPath},you can config icons directory by options.dir and put you file into the directory`)
+                }
             }
         })
 
