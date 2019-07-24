@@ -1,7 +1,7 @@
 {
-    "name": "svgicon",
+    "name": "svgicon-webpack-plugin",
     "version": "1.0.0",
-    "description": "",
+    "description": "svgicon-webpack-plugin",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",

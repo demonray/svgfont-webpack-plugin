@@ -26,9 +26,8 @@ module.exports = {
             template: 'index.html'
         }),
         new SvgIconWebpackPlugin({
-            //inject: 'link',
-            //inject: 'style',
-            inject: 'script',
+            inject: 'link',
+            //inject: 'script',
             fontName: 'iconfont',
             pattern: '**/*.html',
             rules: [{
@@ -36,8 +35,7 @@ module.exports = {
                 ext: /\.html$/
             }],
             svgIcons: ['wind','xhs'],
-            dir: path.join(__dirname, 'icons'), // svg file directory
-            dist: path.join(__dirname, 'dist/fonts'),
+            dir: path.join(__dirname, 'icons') // svg file directory
         })
     ]
 };

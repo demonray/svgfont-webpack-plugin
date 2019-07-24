@@ -2,8 +2,7 @@ require("colors-cli/toxic");
 const color = require('colors-cli');
 const util = require('util');
 const async = require('async');
-const fs = require('fs');
-const fsextra = require('fs-extra');
+const fs = require('fs-extra');
 const path = require('path');
 const create = require('../lib');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -16,22 +15,22 @@ class SvgIconWebpackPlugin {
 
     constructor(options = {}) {
         const defaultOptions = {
-            inject: 'link',
+            inject: 'script',
             globOptions: {
                 nodir: true
             },
-            dist: path.join(process.cwd(), "fonts"),
             fontName: "iconfont",
             rules: [],
-            svgIcons: []
+            iconNames: []
         }
         this.options = Object.assign(defaultOptions, options)
-        this.svgIcons = this.options.svgIcons
+        this.fontsDir = 'fonts'
+        this.iconNames = this.options.iconNames
     }
 
     apply(compiler) {
         let generateFontsPromise;
-        this.fontsPath = path.relative(compiler.options.output.path, this.options.dist);
+        this.options.dist = path.resolve(compiler.options.output.path, 'fonts')
         compiler.hooks.make.tapAsync(pluginName, (compilation, callback) => {
             generateFontsPromise = this.getAllFiles(compiler, compilation)
                 .then(files => {
@@ -62,14 +61,14 @@ class SvgIconWebpackPlugin {
                             let matched = []
                             while ((matched = ruleItem.match.exec(results[key])) !== null) {
                                 if (matched[1]) {
-                                    this.svgIcons.push(matched[1])
+                                    this.iconNames.push(matched[1])
                                 }
                             }
-                            this.svgIcons = Array.from(new Set(this.svgIcons))
+                            this.iconNames = Array.from(new Set(this.iconNames))
                         })
                         this.generateFonts().then(() => {
                             console.log('SvgIconWebpackPlugin done!')
-                            fsextra.removeSync(tempSvgDir)
+                            fs.removeSync(tempSvgDir)
                             callback();
                         }).catch(err => {
                             compilation.errors.push(prettyError(err, compiler.context).toString());
@@ -83,17 +82,13 @@ class SvgIconWebpackPlugin {
                 pluginName,
                 (data, cb) => {
                     generateFontsPromise.then(() => {
-                        const stylePath = path.join(this.fontsPath, `${this.options.fontName}.css`);
+                        const stylePath = path.join(this.fontsDir, `${this.options.fontName}.css`);
                         const headRegExp = /(<\/head\s*>)/i;
                         let inject;
                         if (this.options.inject === 'link') {
                             inject = `<link rel="stylesheet" type="text/css" href="${stylePath}"/>`;
-                        } else if (this.options.inject === 'style') {
-                            const filePath = path.resolve(this.options.dist, `${this.options.fontName}.css`)
-                            const content = fs.readFileSync(filePath)
-                            inject = `<style type="text/css">${content}</style>`
                         } else if (this.options.inject === 'script') {
-                            const jsPath = path.join(this.fontsPath, `${this.options.fontName}.js`);
+                            const jsPath = path.join(this.fontsDir, `${this.options.fontName}.js`);
                             inject = `<script  type="text/javascript" src="${jsPath}"></script>`;
                         }
                         if (inject) data.html = data.html.replace(headRegExp, match => inject + match);
@@ -118,24 +113,24 @@ class SvgIconWebpackPlugin {
     }
 
     generateFonts() {
-        fsextra.emptyDirSync(tempSvgDir)
+        fs.emptyDirSync(tempSvgDir)
         // Todo caceh icons， no change ？
-        this.svgIcons.forEach(item => {
+        this.iconNames.forEach(item => {
             let iconPath = path.resolve(process.cwd(), `../src/svgs/${item}.svg`)
             let distPath = `${tempSvgDir}/${item}.svg`
             let foundInProj = false
             // use config svg icons dir and built-in svg icons
-            if (this.options.dir) {
-                let svgPath = `${this.options.dir}/${item}.svg`
-                if (fs.existsSync(svgPath) && fsextra.statSync(svgPath).isFile()) {
-                    fsextra.copySync(svgPath, distPath)
+            if (this.options.svgsDir) {
+                let svgPath = `${this.options.svgsDir}/${item}.svg`
+                if (fs.existsSync(svgPath) && fs.statSync(svgPath).isFile()) {
+                    fs.copySync(svgPath, distPath)
                     foundInProj = true
                 }
             }
             // search built-in svg icons
             if(!foundInProj) {
-                if (fs.existsSync(iconPath) && fsextra.statSync(iconPath).isFile()) {
-                    fsextra.copySync(iconPath, distPath)
+                if (fs.existsSync(iconPath) && fs.statSync(iconPath).isFile()) {
+                    fs.copySync(iconPath, distPath)
                 } else {
                     console.log(`${color.red('ERROR')} No built-in file '${item}.svg' in ${iconPath},you can config icons directory by options.dir and put you file into the directory`)
                 }
@@ -146,8 +141,7 @@ class SvgIconWebpackPlugin {
             src: tempSvgDir,
             dist: this.options.dist,
             emptyDist: true,
-            fontName: this.options.fontName,
-            fontsPath: this.fontsPath
+            fontName: this.options.fontName
         })
     }
 

@@ -1,35 +1,104 @@
-https://github.com/HaoyCn/iconfont-plugin-webpack/blob/master/index.js
-https://github.com/jaywcjlove/svgtofont
-https://github.com/heuuLZP/svg-icon-map/blob/master/vue-svg-icon/vue.config.js
-https://github.com/stowball/webpack-svg-icon-system#readme
 
-按需加载图标
-https://github.com/vusion/icon-font-loader
+# svgicon-webpack-plugin
 
-图标库管理
+插件目的是改善前端项目中使用svg图标，字体文件的开发体验。
+插件根据配置，在构建时收集项目中使用的图标，然后根据这些svg图标，生成字体资源。并输出到html
+注意：本插件需与html-webpack-plugin配合使用。
 
-webpack 插件
-收集使用的图标，打包时替换成css 或者生成svg-spirit
+## Depenance
 
-使用场景：
+html-webpack-plugin
 
-字体文件方式
-1. html vue等组件里面通过class匹配出使用的图标名：
-<i class="iconfont iconfont-home" />
-<Icon type="iconfont-home" />
-2. 配置插件传递图标目录，或者名称数组
-['iconfont-home','iconfont-plus']
+## Installation
 
-svg方式
-svg symbol
+### npm
 
-配置支持：
+```sh
+npm install SvgIcon
+```
 
-index.html 插入link引用样式文件
-通过style标签直接插入html文件
-入口文件注入样式引用 ？
+### run demo
+
+```sh
+$ git clone https://github.com/demonray/svgicon.git
+$ cd cyeditor
+$ npm install
+$ npm run dev
+```
+
+## Usage
+
+webpack 配置示例子，如下:
+
+```javascript
+// webpack.config.js
+const  path = require('path');
+const  SvgIconWebpackPlugin = require('svgicon-webpack-plugin');
+const  HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+    // ...
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: 'index.html'
+        }),
+        new SvgIconWebpackPlugin({
+            inject: 'script',
+            fontName: 'iconfont',
+            pattern: '**/*.html',
+            rules: [{
+                match: /<i.*class=".*iconfont-([0-9a-zA-Z_-]*)".*>/,
+                ext: /\.html$/
+            }],
+            iconNames: ['wind','xhs'],
+            svgsDir: path.join(__dirname, 'icons') // svg file directory
+        })]
+}
+
+```
+
+## 配置
+
+### inject
+
+- 类型: `string`
+- 默认值: `'link'`
+
+inject: 'link' 生成的css文件插入index.html中
+inject: 'script' 生成iconfont.js插入index.html中
 
 
-内置图表库，项目图标配置
+### fontName
 
+- 类型: `string`
+- 默认值: `'iconfont'`
 
+字体文件名称，最终用于生成字体资源文件的文件名。
+
+### pattern
+
+- 类型: `string`
+- 必须: `是`
+
+glob options 匹配用于需要搜索的文件，找出使用的图标。
+
+### rules
+
+- 类型: `Array`
+- 默认值: `[]`
+
+匹配规则
+
+### iconNames
+
+- 类型: `Array`
+- 默认值: `[]`
+
+图标名，支持定义图标名
+
+### svgsDir
+
+- 类型: `string`
+- 默认值: `'link'`
+
+项目svg文件目录
