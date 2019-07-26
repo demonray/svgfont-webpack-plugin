@@ -13,7 +13,7 @@
         "src/",
         "index.js"
     ],
-    "author": "",
+    "author": "ryanlei <leiqirong@gmail.com> (https://github.com/demonray)",
     "license": "ISC",
     "devDependencies": {
         "css-loader": "^2.1.1",
