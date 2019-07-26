@@ -33,14 +33,15 @@ iconfont.woff2
 ### npm
 
 ```sh
-npm install SvgIcon
+npm install svgfont-webpack-plugin
+
 ```
 
 ### run demo
 
 ```sh
-$ git clone https://github.com/demonray/svgicon.git
-$ cd cyeditor
+$ git clone https://github.com/demonray/svgfont-webpack-plugin.git
+$ cd svgfont-webpack-plugin
 $ npm install
 $ npm run dev
 ```
