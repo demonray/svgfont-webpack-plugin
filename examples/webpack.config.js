@@ -34,8 +34,8 @@ module.exports = {
                 match: /<i.*class=".*iconfont-([0-9a-zA-Z_-]*)".*>/,
                 ext: /\.html$/
             }],
-            svgIcons: ['wind','xhs'],
-            dir: path.join(__dirname, 'icons') // svg file directory
+            iconNames: ['wind','xhs','安全_line'],
+            svgsDir: path.join(__dirname, 'icons') // svg file directory
         })
     ]
 };

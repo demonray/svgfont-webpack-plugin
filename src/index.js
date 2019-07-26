@@ -40,7 +40,6 @@ class SvgIconWebpackPlugin {
                         let ruleItem = rules.find(rule => rule.ext.test(file))
                         if (ruleItem) {
                             const src = path.resolve(file)
-                            console.log(src)
                             return srcs[src] = ruleItem
                         }
                     })
@@ -115,6 +114,7 @@ class SvgIconWebpackPlugin {
     generateFonts() {
         fs.emptyDirSync(tempSvgDir)
         // Todo caceh icons， no change ？
+        console.log(`${color.green('SUCCESS')} ${"iconNames".blue_bt}`, this.iconNames)
         this.iconNames.forEach(item => {
             let iconPath = path.resolve(process.cwd(), `../src/svgs/${item}.svg`)
             let distPath = `${tempSvgDir}/${item}.svg`

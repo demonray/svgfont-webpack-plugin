@@ -8,6 +8,11 @@
         "dev": "cd examples && webpack-dev-server",
         "build": "cd examples && webpack"
     },
+    "files": [
+        "lib/",
+        "src/",
+        "index.js"
+    ],
     "author": "",
     "license": "ISC",
     "devDependencies": {

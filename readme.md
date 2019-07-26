@@ -21,7 +21,8 @@ iconfont.woff2
 
 注意：
 1.本插件需与html-webpack-plugin配合使用。
-2.svg文件名即为iconName。<symbol>的唯一标识id、font-class 名格式为 `${fontName}-${iconName}`
+2.svg文件名即为iconName。<symbol>的唯一标识id、font-class 名格式为 `${fontName}-${iconName}`。
+3.所有svg，width，height应当保存一致。
 
 ## Depenance
 
