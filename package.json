@@ -1,5 +1,5 @@
 {
-    "name": "svgicon-webpack-plugin",
+    "name": "svgfont-webpack-plugin",
     "version": "1.0.0",
     "description": "svgicon-webpack-plugin",
     "main": "index.js",
