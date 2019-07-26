@@ -10,8 +10,8 @@ const prettyError = require('../lib/errors.js');
 const glob = util.promisify(require('glob'));
 const tempSvgDir = path.resolve('../tmpsvg');
 
-const pluginName = 'SvgIconWebpackPlugin'
-class SvgIconWebpackPlugin {
+const pluginName = 'SvgFontWebpackPlugin'
+class SvgFontWebpackPlugin {
 
     constructor(options = {}) {
         const defaultOptions = {
@@ -66,7 +66,7 @@ class SvgIconWebpackPlugin {
                             this.iconNames = Array.from(new Set(this.iconNames))
                         })
                         this.generateFonts().then(() => {
-                            console.log('SvgIconWebpackPlugin done!')
+                            console.log('SvgFontWebpackPlugin done!')
                             fs.removeSync(tempSvgDir)
                             callback();
                         }).catch(err => {
@@ -147,6 +147,6 @@ class SvgIconWebpackPlugin {
 
 }
 
-SvgIconWebpackPlugin.version = '1.0.0';
+SvgFontWebpackPlugin.version = '1.0.0';
 
-module.exports = SvgIconWebpackPlugin;
+module.exports = SvgFontWebpackPlugin;

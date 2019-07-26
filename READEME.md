@@ -1,5 +1,5 @@
 
-# svgicon-webpack-plugin
+# svgfont-webpack-plugin
 
 本插件目的是改善前端项目中使用svg图标及web字体的开发体验。
 插件根据配置，在webpack构建时收集项目中使用到到图标，然后根据这些svg图标，生成字体资源。并输出到html。
@@ -52,7 +52,7 @@ webpack 配置示例子，如下:
 ```javascript
 // webpack.config.js
 const  path = require('path');
-const  SvgIconWebpackPlugin = require('svgicon-webpack-plugin');
+const  SvgFontWebpackPlugin = require('svgfont-webpack-plugin');
 const  HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -61,7 +61,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: 'index.html'
         }),
-        new SvgIconWebpackPlugin({
+        new SvgFontWebpackPlugin({
             inject: 'script',
             fontName: 'iconfont',
             pattern: '**/*.html',
