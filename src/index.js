@@ -23,7 +23,14 @@ class SvgFontWebpackPlugin {
             rules: [],
             iconNames: []
         }
-        this.options = Object.assign(defaultOptions, options)
+        this.options = Object.assign(defaultOptions, options, {
+            svgicons2svgfont: {
+                fontHeight: 1000,
+                fontName: options.fontName,
+                normalize: false,
+                ...options.svgicons2svgfont
+            }
+        })
         this.fontsDir = 'fonts'
         this.iconNames = this.options.iconNames
     }
@@ -128,7 +135,7 @@ class SvgFontWebpackPlugin {
                 }
             }
             // search built-in svg icons
-            if(!foundInProj) {
+            if (!foundInProj) {
                 if (fs.existsSync(iconPath) && fs.statSync(iconPath).isFile()) {
                     fs.copySync(iconPath, distPath)
                 } else {
@@ -141,7 +148,8 @@ class SvgFontWebpackPlugin {
             src: tempSvgDir,
             dist: this.options.dist,
             emptyDist: true,
-            fontName: this.options.fontName
+            fontName: this.options.fontName,
+            svgicons2svgfont: this.options.svgicons2svgfont
         })
     }
 

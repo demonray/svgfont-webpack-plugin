@@ -20,9 +20,20 @@ iconfont.woff2
 ```
 
 注意：
-1.本插件需与html-webpack-plugin配合使用。
-2.svg文件名即为iconName。<symbol>的唯一标识id、font-class 名格式为 `${fontName}-${iconName}`。
-3.所有svg，width，height应当保存一致。
+
+- 1.本插件需与html-webpack-plugin配合使用。
+- 2.svg文件名即为iconName。<symbol>的唯一标识id、font-class 名格式为 `${fontName}-${iconName}`。
+- 3.所有svg，width，height应当保存一致。
+
+
+### run demo
+
+```sh
+$ git clone https://github.com/demonray/svgfont-webpack-plugin.git
+$ cd svgfont-webpack-plugin
+$ npm install
+$ npm run dev
+```
 
 ## Depenance
 
@@ -35,15 +46,6 @@ iconfont.woff2
 ```sh
 npm install svgfont-webpack-plugin
 
-```
-
-### run demo
-
-```sh
-$ git clone https://github.com/demonray/svgfont-webpack-plugin.git
-$ cd svgfont-webpack-plugin
-$ npm install
-$ npm run dev
 ```
 
 ## Usage
@@ -128,3 +130,18 @@ svg图标文件名，支持定义图标名，iconNames里的图标名称会和�
 - 默认值: `'link'`
 
 项目svg文件目录，如配置，则插件优先使用此目录里的 `${iconName}.svg` SVG文件。此目录未找到会在插件内置图标集里寻找。
+
+### svgicons2svgfont
+
+- 类型: `string`
+- 默认值: 
+
+```
+{
+    fontHeight: 1000,
+    normalize: false
+}
+
+```
+
+配置项会传递给svgicons2svgfont
